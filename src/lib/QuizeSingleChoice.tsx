@@ -36,8 +36,8 @@ type QuizSingleChoiceProps = {
   responseRequired: boolean;
   onEnd: (results: any) => any;
   data: Array<Question>;
-  duration : number;
-  onTimeEnd : (results: any) => any;
+  duration: number;
+  onTimeEnd: (results: any) => any;
 };
 const QuizSingleChoice = ({
   containerStyle,
@@ -59,7 +59,7 @@ const QuizSingleChoice = ({
   responseRequired,
   onEnd,
   data,
-  duration, 
+  duration,
   onTimeEnd
 }: QuizSingleChoiceProps) => {
   const originalData = data;
@@ -109,6 +109,22 @@ const QuizSingleChoice = ({
     },
     [questions]
   );
+
+  const onCountDownComplete = () => {
+    let newData = [];
+    for (let q of questions) {
+      newData.push({
+        question: q.question,
+        response: q.response,
+        isRight: q.answer === q.response,
+        answer: q.answer,
+        questionId: q.questionId,
+        responseId: q.responseId
+      });
+    }
+    onTimeEnd(newData);
+  };
+
   React.useEffect(() => {
     Animated.spring(animation, {
       toValue: currentIndex,
@@ -118,9 +134,9 @@ const QuizSingleChoice = ({
   const translateX =
     questions.length > 1
       ? animation.interpolate({
-          inputRange: questions.map((_, index) => index),
-          outputRange: questions.map((_, index) => -index * width),
-        })
+        inputRange: questions.map((_, index) => index),
+        outputRange: questions.map((_, index) => -index * width),
+      })
       : 0;
   const isLast = currentIndex === questions.length - 1;
   const isFirst = currentIndex === 0;
@@ -134,6 +150,26 @@ const QuizSingleChoice = ({
         containerStyle,
       ]}
     >
+      {
+        duration && <View style={{ alignItems: "center" }}>
+          <CountdownCircleTimer
+            isPlaying
+            duration={duration * 60}
+            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+            colorsTime={[duration * 60, 5, 2, 0]}
+            size={80}
+            strokeWidth={8}
+            // updateInterval={60}
+            onComplete={onCountDownComplete}
+          >
+            {({ remainingTime, color }) => {
+              const minutes = Math.floor(remainingTime / 60)
+              const seconds = remainingTime % 60
+              return <Text style={{ color }}>{`${minutes}:${seconds}`}</Text>
+            }}
+          </CountdownCircleTimer>
+        </View>
+      }
       <Animated.View
         style={{
           flexDirection: "row",
