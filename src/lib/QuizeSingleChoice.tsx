@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { AppButton, OppButton } from "./Buttons";
 const { width } = Dimensions.get("window");
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 
 type QuestionResponse = {
   question: string;
@@ -35,6 +36,8 @@ type QuizSingleChoiceProps = {
   responseRequired: boolean;
   onEnd: (results: any) => any;
   data: Array<Question>;
+  duration : number;
+  onTimeEnd : (results: any) => any;
 };
 const QuizSingleChoice = ({
   containerStyle,
@@ -56,6 +59,8 @@ const QuizSingleChoice = ({
   responseRequired,
   onEnd,
   data,
+  duration, 
+  onTimeEnd
 }: QuizSingleChoiceProps) => {
   const originalData = data;
   const [questions, setQuestions] = React.useState([
