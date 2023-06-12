@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { AppButton, OppButton } from "./Buttons";
 const { width } = Dimensions.get("window");
+
 type QuestionResponse = {
   question: string;
   answer: string;
@@ -65,10 +66,11 @@ const QuizSingleChoice = ({
   const animation = React.useRef(new Animated.Value(0)).current;
 
   const onAnswer = React.useCallback(
-    (_: any, response: string) => {
+    (_: any, idx: string, response: string) => {
       const newQuestions = [...questions];
       const activeQuestion = { ...newQuestions[currentIndex] };
       activeQuestion.response = response;
+      activeQuestion.responseId = idx;
       newQuestions[currentIndex] = activeQuestion;
       setQuestions(newQuestions);
     },
@@ -94,6 +96,8 @@ const QuizSingleChoice = ({
           response: q.response,
           isRight: q.answer === q.response,
           answer: q.answer,
+          questionId: q.questionId,
+          responseId: q.responseId
         });
       }
       onEnd(newData);
@@ -200,7 +204,7 @@ export default QuizSingleChoice;
 
 function getResposesKeys(item: Question) {
   return Object.keys(item).filter(
-    (key) => !["question", "answer", "response"].includes(key)
+    (key) => !["question", "answer", "response", "questionId", "responseId"].includes(key)
   );
 }
 
@@ -246,7 +250,7 @@ function Question({
               }
               responseStyle={select ? selectedResponseStyle : responseStyle}
               onPress={() => {
-                onAnswer(item, text);
+                onAnswer(item, i, text);
               }}
             />
           );
