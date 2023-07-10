@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { AppButton, OppButton } from "./Buttons";
 const { width } = Dimensions.get("window");
-import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
+import { ColorFormat, CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 
 type QuestionResponse = {
   question: string;
@@ -37,6 +37,7 @@ type QuizSingleChoiceProps = {
   onEnd: (results: any) => any;
   data: Array<Question>;
   duration: number;
+  durationColors: { 0: `#${string}`; } & { 1: `#${string}`; } & `#${string}`[],
   onTimeEnd: (results: any) => any;
 };
 const QuizSingleChoice = ({
@@ -60,6 +61,7 @@ const QuizSingleChoice = ({
   onEnd,
   data,
   duration,
+  durationColors,
   onTimeEnd
 }: QuizSingleChoiceProps) => {
   const originalData = data;
@@ -155,7 +157,7 @@ const QuizSingleChoice = ({
           <CountdownCircleTimer
             isPlaying
             duration={duration * 60}
-            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+            colors={durationColors ?? ['#004777', '#F7B801', '#A30000', '#A30000']}
             colorsTime={[duration * 60, 5, 2, 0]}
             size={80}
             strokeWidth={8}
